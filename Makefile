@@ -26,12 +26,12 @@ Jasmin:
 	make targets \
 	"F90C = gfortran" \
 	"FFLAGS = -c -O3"	
-	
+
 
 
 
 clean:
-	-rm -f *.o *.lst *.mod
+	-rm -f *.o *.lst *.mod pp_getfields pp_merge pp_qdiff pp_rdiff
 
 #######################################
 

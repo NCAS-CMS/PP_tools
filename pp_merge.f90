@@ -263,20 +263,13 @@ contains
     end if
   end function read_PP_header
 
-  subroutine get_hdr_size(hdr, Nrows, Nptsperrow)
+  subroutine get_hdr_size(hdr, lblrec)
     type (PP_header), intent(in)    :: hdr
-    integer, intent(out)         :: Nrows
-    integer, intent(out)         :: Nptsperrow
+    integer, intent(out)         :: lblrec
 
-    Nrows = hdr%IPP(18)
-    if ( Nrows <= 0 ) then
-       write(*,*) "Invalid PP header. LBROW = ", Nrows
-       stop
-    end if
-
-    Nptsperrow = hdr%IPP(19)
-    if ( Nptsperrow <= 0 ) then
-       write(*,*) "Invalid PP header. LBNPTS = ", Nptsperrow
+    lblrec = hdr%IPP(15)
+    if ( lblrec <= 0 ) then
+       write(*,*) "Invalid PP header. LBLREC = ", lblrec
        stop
     end if
 
@@ -335,15 +328,15 @@ contains
     type(PP_header), intent(in) :: hdr
     integer, intent(in)         :: lun_out
 
-    integer                     :: Nrows, Nptsperrow
+    integer                     :: lblrec
 
-    real, dimension(:,:), allocatable ::  data
+    real, dimension(:), allocatable ::  data
 
     readdataandOutput = .true.    ! not the end of the input file
-    call get_hdr_size(hdr, Nrows, Nptsperrow)
+    call get_hdr_size(hdr, lblrec)
 
     ! Read the data 
-    allocate(data(Nptsperrow,Nrows), stat = io_status)
+    allocate(data(lblrec), stat = io_status)
     if ( io_status /= 0 ) stop "Allocation error"
     read(lun_in, iostat = io_status) data
     if ( io_status > 0 ) then
