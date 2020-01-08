@@ -25,19 +25,19 @@ HECToR:
 Jasmin:
 	make targets \
 	"F90C = gfortran" \
-	"FFLAGS = -c -O3"	
+	"FFLAGS = -w -c -O3"	
 
 
 
 
 clean:
-	-rm -f *.o *.lst *.mod pp_getfields pp_merge pp_qdiff pp_rdiff
+	-rm -f *.o *.lst *.mod pp_getfields pp_merge pp_qdiff pp_rdiff pp_unpack
 
 #######################################
 
 LIBS = 
 
-targets: pp_merge pp_rdiff  pp_qdiff pp_getfields
+targets: pp_merge pp_rdiff  pp_qdiff pp_getfields pp_unpack
 
 pp_rdiff: pp_rdiff.o
 	${F90C} -Bstatic -o pp_rdiff pp_rdiff.o PP_type.o
@@ -73,3 +73,16 @@ pp_getfields.o: pp_getfields.f90 stash_list.mod pp_type.mod
 
 stash_list.mod: stash_list.f90
 	$(F90C) $(FFLAGS) stash_list.f90
+##
+OBJS= unpackpp.o ibmconv.o
+
+pp_unpack: $(OBJS)
+	${F90C} -Bstatic -o pp_unpack $(OBJS)
+
+unpackpp.o: unpackpp.F90
+	$(F90C) $(FFLAGS) -c unpackpp.F90
+
+
+ibmconv.o:	ibmconv.c
+	$(CC) $(CFLAGS) -c ibmconv.c
+
